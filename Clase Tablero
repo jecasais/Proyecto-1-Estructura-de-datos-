@@ -1,0 +1,52 @@
+public class Board {
+    private Node[][] grid; // Matriz 4x4 de nodos
+    private final int size = 4;
+
+    public Board(char[][] letters) {
+        grid = new Node[size][size];
+        initializeBoard(letters);
+        buildGraph();
+    }
+
+    private void initializeBoard(char[][] letters) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                grid[i][j] = new Node(letters[i][j], i, j);
+            }
+        }
+    }
+
+    private void buildGraph() {
+        int[] dx = {-1, -1, -1, 0, 1, 1, 1, 0};
+        int[] dy = {-1, 0, 1, 1, 1, 0, -1, -1}; // Todas las direcciones posibles
+        
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                Node current = grid[i][j];
+                for (int d = 0; d < dx.length; d++) {
+                    int nx = i + dx[d];
+                    int ny = j + dy[d];
+                    if (nx >= 0 && nx < size && ny >= 0 && ny < size) {
+                        current.addNeighbor(grid[nx][ny]);
+                    }
+                }
+            }
+        }
+    }
+
+    public Node getNode(int x, int y) {
+        if (x >= 0 && x < size && y >= 0 && y < size) {
+            return grid[x][y];
+        }
+        return null;
+    }
+
+    public void displayBoard() {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                System.out.print(grid[i][j].getLetter() + " ");
+            }
+            System.out.println();
+        }
+    }
+}
