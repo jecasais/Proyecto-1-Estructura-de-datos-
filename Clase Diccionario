@@ -1,0 +1,64 @@
+public class Dictionary {
+    private Set<String> words; // Conjunto de palabras del diccionario
+
+    public Dictionary() {
+        words = new HashSet<>();
+    }
+
+    // Cargar palabras desde un archivo
+    public void loadFromFile(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            boolean readingDictionary = false;
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.equals("dic")) { 
+                    readingDictionary = true; 
+                    continue;
+                }
+                if (line.equals("/dic")) { 
+                    readingDictionary = false; 
+                    continue;
+                }
+                if (readingDictionary) {
+                    words.add(line.toUpperCase()); // Almacenar palabras en mayúsculas
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error al leer el archivo: " + e.getMessage());
+        }
+    }
+
+    // Verificar si una palabra está en el diccionario
+    public boolean contains(String word) {
+        return words.contains(word.toUpperCase());
+    }
+
+    // Agregar una nueva palabra al diccionario
+    public void addWord(String word) {
+        if (word.length() >= 3) { // La palabra debe tener al menos 3 letras
+            words.add(word.toUpperCase());
+        } else {
+            System.out.println("La palabra debe tener al menos 3 letras.");
+        }
+    }
+
+    // Guardar el diccionario actualizado en un archivo
+    public void saveToFile(String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write("dic\n");
+            for (String word : words) {
+                writer.write(word + "\n");
+            }
+            writer.write("/dic\n");
+            System.out.println("Diccionario guardado correctamente.");
+        } catch (IOException e) {
+            System.err.println("Error al guardar el archivo: " + e.getMessage());
+        }
+    }
+
+    // Obtener todas las palabras almacenadas
+    public Set<String> getWords() {
+        return words;
+    }
+}
